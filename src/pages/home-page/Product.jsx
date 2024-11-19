@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import coffeeStore from '../../api-request/coffe-api/coffeeStore';
 
 const Product = () => {
+    const { coffeeDataListApi, coffeDataList } = coffeeStore();
+    useEffect(() => {
+        (async () => {
+            await coffeeDataListApi();
+        })()
+    }, []);
+    const handleDelete = async (id)=>{
+        console.log(id);
+    }
     return (
         <div className="w-11/12 mx-auto">
             {/* Header Section */}
@@ -24,133 +34,57 @@ const Product = () => {
             {/* Products Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 my-10">
                 {/* Product 1 */}
-                <div className="flex flex-col md:flex-row items-center bg-[#F5F4F1] shadow-lg rounded-lg p-5">
-                    <img
-                        src="https://via.placeholder.com/150"
-                        alt="Coffee Cup"
-                        className="w-24 h-32 object-cover mb-4 md:mb-0"
-                    />
-                    <div className="ml-0 md:ml-3 flex-grow text-center md:text-left">
-                        <h2 className="text-lg text-[#1B1A1A]">
-                            Name: <span className="text-[#5C5B5B]">Americano Coffee</span>
-                        </h2>
-                        <p className="text-lg text-[#1B1A1A]">
-                            Chef: <span className="text-[#5C5B5B]">Mr. Matin Paul</span>
-                        </p>
-                        <p className="text-lg text-[#1B1A1A]">
-                            Price: <span className="text-[#5C5B5B]">890 Taka</span>
-                        </p>
-                    </div>
-                    <div className="flex flex-row md:flex-col items-center space-x-2 md:space-x-0 md:space-y-2">
-                        <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
-                            <img
-                                className="w-6"
-                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950796/Group_14_ia7noa.png"
-                                alt=""
-                            />
-                        </button>
-                        <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
-                            <img
-                                className="w-6"
-                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950630/Group_12_cdcavw.png"
-                                alt=""
-                            />
-                        </button>
-                        <button className="bg-red-200 hover:bg-red-300 p-2 rounded">
-                            <img
-                                className="w-6"
-                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950713/Group_13_ngwbeg.png"
-                                alt=""
-                            />
-                        </button>
-                    </div>
-                </div>
+                {
+                    coffeDataList && coffeDataList.map((item, i) => {
+                        return (
+                            <div key={i} >
+                                <div className="flex flex-col md:flex-row items-center bg-[#F5F4F1] shadow-lg rounded-lg p-5">
+                                    <img
+                                        src={item?.Photo}
+                                        alt="Coffee Cup"
+                                        className="w-24 h-32 object-cover mb-4 md:mb-0"
+                                    />
+                                    <div className="ml-0 md:ml-3 flex-grow text-center md:text-left">
+                                        <h2 className="text-lg text-[#1B1A1A]">
+                                            Name: <span className="text-[#5C5B5B]"> {item?.Name} </span>
+                                        </h2>
+                                        <p className="text-lg text-[#1B1A1A]">
+                                            Chef: <span className="text-[#5C5B5B]"> { item?.Chef } </span>
+                                        </p>
+                                        <p className="text-lg text-[#1B1A1A]">
+                                            Price: <span className="text-[#5C5B5B]">{ item.price  } </span>
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-row md:flex-col items-center space-x-2 md:space-x-0 md:space-y-2">
+                                        <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
+                                            <img
+                                                className="w-6"
+                                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950796/Group_14_ia7noa.png"
+                                                alt=""
+                                            />
+                                        </button>
+                                        <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
+                                            <img
+                                                className="w-6"
+                                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950630/Group_12_cdcavw.png"
+                                                alt=""
+                                            />
+                                        </button>
+                                        <button onClick={()=>handleDelete(item?._id)} className="bg-red-200 hover:bg-red-300 p-2 rounded">
+                                            <img
+                                                className="w-6"
+                                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950713/Group_13_ngwbeg.png"
+                                                alt=""
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })
+                }
 
-                {/* Product 2 */}
-                <div className="flex flex-col md:flex-row items-center bg-[#F5F4F1] shadow-lg rounded-lg p-5">
-                    <img
-                        src="https://via.placeholder.com/150"
-                        alt="Coffee Cup"
-                        className="w-24 h-32 object-cover mb-4 md:mb-0"
-                    />
-                    <div className="ml-0 md:ml-3 flex-grow text-center md:text-left">
-                        <h2 className="text-lg text-[#1B1A1A]">
-                            Name: <span className="text-[#5C5B5B]">Espresso Coffee</span>
-                        </h2>
-                        <p className="text-lg text-[#1B1A1A]">
-                            Chef: <span className="text-[#5C5B5B]">Ms. Sarah Khan</span>
-                        </p>
-                        <p className="text-lg text-[#1B1A1A]">
-                            Price: <span className="text-[#5C5B5B]">720 Taka</span>
-                        </p>
-                    </div>
-                    <div className="flex flex-row md:flex-col items-center space-x-2 md:space-x-0 md:space-y-2">
-                        <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
-                            <img
-                                className="w-6"
-                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950796/Group_14_ia7noa.png"
-                                alt=""
-                            />
-                        </button>
-                        <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
-                            <img
-                                className="w-6"
-                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950630/Group_12_cdcavw.png"
-                                alt=""
-                            />
-                        </button>
-                        <button className="bg-red-200 hover:bg-red-300 p-2 rounded">
-                            <img
-                                className="w-6"
-                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950713/Group_13_ngwbeg.png"
-                                alt=""
-                            />
-                        </button>
-                    </div>
-                </div>
 
-                {/* Product 3 */}
-                <div className="flex flex-col md:flex-row items-center bg-[#F5F4F1] shadow-lg rounded-lg p-5">
-                    <img
-                        src="https://via.placeholder.com/150"
-                        alt="Coffee Cup"
-                        className="w-24 h-32 object-cover mb-4 md:mb-0"
-                    />
-                    <div className="ml-0 md:ml-3 flex-grow text-center md:text-left">
-                        <h2 className="text-lg text-[#1B1A1A]">
-                            Name: <span className="text-[#5C5B5B]">Latte Coffee</span>
-                        </h2>
-                        <p className="text-lg text-[#1B1A1A]">
-                            Chef: <span className="text-[#5C5B5B]">Mr. John Doe</span>
-                        </p>
-                        <p className="text-lg text-[#1B1A1A]">
-                            Price: <span className="text-[#5C5B5B]">950 Taka</span>
-                        </p>
-                    </div>
-                    <div className="flex flex-row md:flex-col items-center space-x-2 md:space-x-0 md:space-y-2">
-                        <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
-                            <img
-                                className="w-6"
-                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950796/Group_14_ia7noa.png"
-                                alt=""
-                            />
-                        </button>
-                        <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
-                            <img
-                                className="w-6"
-                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950630/Group_12_cdcavw.png"
-                                alt=""
-                            />
-                        </button>
-                        <button className="bg-red-200 hover:bg-red-300 p-2 rounded">
-                            <img
-                                className="w-6"
-                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950713/Group_13_ngwbeg.png"
-                                alt=""
-                            />
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     );
