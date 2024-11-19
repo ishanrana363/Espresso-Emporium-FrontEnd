@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import coffeeStore from '../../api-request/coffe-api/coffeeStore';
 
 const CoffeeDetails = () => {
+    window.scrollTo(0, 0);
+    const { id } = useParams();
+    const { singleCoffeeDataApi, singleCoffeeData } = coffeeStore();
+    useEffect(() => {
+        (async () => {
+            await singleCoffeeDataApi(id);
+        })()
+    }, [id])
     return (
         <div className=" flex items-center justify-center my-6 ">
             <div className="max-w-4xl w-full p-4">
@@ -8,7 +18,7 @@ const CoffeeDetails = () => {
                     {/* Coffee Image */}
                     <div className="flex-shrink-0 flex ">
                         <img
-                            src="https://via.placeholder.com/200" // Replace with your actual image URL
+                            src={singleCoffeeData?.Photo} // Replace with your actual image URL
                             alt="Coffee Cup"
                             className="w-52 h-auto"
                         />
@@ -19,23 +29,26 @@ const CoffeeDetails = () => {
                         <h1 className="text-2xl font-bold text-[#5C5B5B] mb-4">Niceties</h1>
                         <ul className="space-y-2 text-[#1B1A1A] text-lg">
                             <li>
-                                <strong>Name:</strong> <span className="text-[#5C5B5B]">Americano Coffee</span>
+                                <strong>Name:</strong> <span className="text-[#5C5B5B]"> {singleCoffeeData?.Name} </span>
                             </li>
                             <li>
-                                <strong>Chef:</strong> <span className="text-[#5C5B5B]">Mr. Matin Paul</span>
+                                <strong>Chef:</strong> <span className="text-[#5C5B5B]">{singleCoffeeData?.Chef}</span>
                             </li>
                             <li>
-                                <strong>Supplier:</strong> <span className="text-[#5C5B5B]">Cappu. Authorizer</span>
+                                <strong>Supplier:</strong> <span className="text-[#5C5B5B]">{singleCoffeeData?.Supplier}</span>
                             </li>
                             <li>
-                                <strong>Taste:</strong> <span className="text-[#5C5B5B]">Sweet and hot</span>
+                                <strong>Taste:</strong> <span className="text-[#5C5B5B]">{singleCoffeeData?.Taste}</span>
                             </li>
                             <li>
-                                <strong>Category:</strong> <span className="text-[#5C5B5B]">Americano</span>
+                                <strong>Category:</strong> <span className="text-[#5C5B5B]">{singleCoffeeData?.Category}</span>
+                            </li>
+                            <li>
+                                <strong>Price:</strong> <span className="text-[#5C5B5B]">{singleCoffeeData?.price}</span>
                             </li>
                             <li>
                                 <strong>Details:</strong>{' '}
-                                <span className="text-[#5C5B5B]">Espresso with hot water</span>
+                                <span className="text-[#5C5B5B]">{singleCoffeeData?.Details} </span>
                             </li>
                         </ul>
                     </div>
