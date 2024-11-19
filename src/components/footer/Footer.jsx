@@ -64,7 +64,7 @@ const Footer = () => {
                         </div>
 
                         {/* Right Section */}
-                        <div className="w-full md:w-1/2 rounded-lg p-6 bg-white shadow-lg">
+                        <div className="w-full md:w-1/2 rounded-lg p-6  ">
                             <h1 className="text-xl font-bold text-gray-800 mb-4">
                                 Connect with Us
                             </h1>
