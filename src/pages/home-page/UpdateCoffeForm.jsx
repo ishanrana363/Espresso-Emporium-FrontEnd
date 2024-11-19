@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { uploadImg } from "../../upload-img/UploadImg";
-import axios from "axios";
-import { createAlert } from "../../helper/createAlert";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 import coffeeStore from "../../api-request/coffe-api/coffeeStore";
+import { useNavigate, useParams } from "react-router-dom";
+import { updateAlert } from "../../helper/updateAlert";
+import Swal from "sweetalert2";
 
-const AddCoffeForm = () => {
+const UpdateCoffeForm = () => {
     const [imageUrl, setImageUrl] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { coffeeDataListApi } = coffeeStore();
+    const { singleCoffeeDataApi, singleCoffeeData,coffeeUpdateApi } = coffeeStore();
     const navigate = useNavigate();
     window.scrollTo(0, 0);
 
@@ -25,6 +24,18 @@ const AddCoffeForm = () => {
         }
     };
 
+    const { id } = useParams();
+
+    useEffect(() => {
+        (async () => {
+            setLoading(true);
+            await singleCoffeeDataApi(id);
+            setLoading(false); // Stop loading
+        })()
+    }, [id]);
+
+    const {Photo : upcommingPhoto} = singleCoffeeData;
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true); // Start loading
@@ -36,11 +47,16 @@ const AddCoffeForm = () => {
         const Details = e.target.Details.value;
         const Photo = e.target.Photo.files[0];
         const price = e.target.price.value;
-        let imgUrl = "";
+        
+        let upcommingImg = upcommingPhoto;
 
-        if (Photo?.name) {
-            imgUrl = await uploadImg(Photo);
+        if(!Photo?.name){
+            upcommingImg = upcommingPhoto;
         }
+
+        upcommingImg = await uploadImg(Photo);
+
+        
 
         const payload = {
             Name,
@@ -50,41 +66,35 @@ const AddCoffeForm = () => {
             Category,
             Details,
             price,
-            Photo: imgUrl,
+            Photo: upcommingImg,
         };
 
-        try {
-
-            let resp = await createAlert();
-            if (resp.isConfirmed) {
-                const res = await axios.post(
-                    `https://espresso-emporium-backend-lemon.vercel.app/coffee`,
-                    payload
-                );
-                if (res) {
-                    await coffeeDataListApi();
-                    Swal.fire({
-                        title: "Upload!",
-                        text: "Your file data has been uploaded.",
-                        icon: "success"
-                    });
-                    navigate("/");
-                    return;
-                } else {
-                    Swal.fire({
-                        title: "Error!",
-                        text: "An error occurred while create the file.",
-                        icon: "error"
-                    });
-                }
+        let resp = await updateAlert();
+        if(resp.isConfirmed){
+            setLoading(true);
+            let res = coffeeUpdateApi(id,payload);
+            setLoading(false); // Stop loading
+            if(res){
+                setLoading(true);
+                await singleCoffeeDataApi(id);
+                setLoading(false); // Stop loading
+                Swal.fire({
+                    title: "Coffee Updated Successfully!",
+                    icon: "success",
+                    confirmButtonText: "Ok",
+                });
+                navigate("/")
+                return;
+            }else{
+                Swal.fire({
+                    title: "Failed to Update Coffee!",
+                    icon: "error",
+                    confirmButtonText: "Ok",
+                })
             }
-
-        } catch (err) {
-            console.log(err);
-        } finally {
-            setLoading(false); // Stop loading after submission
         }
-        e.target.reset();
+        
+
     };
 
     return (
@@ -114,8 +124,8 @@ const AddCoffeForm = () => {
                                     type="text"
                                     id="name"
                                     name="Name"
-                                    placeholder="Americano Coffee"
-                                    required
+                                    defaultValue={singleCoffeeData?.Name}
+                                    key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
                             </div>
@@ -130,8 +140,8 @@ const AddCoffeForm = () => {
                                     type="text"
                                     id="chef"
                                     name="Chef"
-                                    required
-                                    placeholder="Mr. Martin Paul"
+                                    defaultValue={singleCoffeeData?.Chef}
+                                    key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
                             </div>
@@ -148,9 +158,9 @@ const AddCoffeForm = () => {
                                 <input
                                     type="text"
                                     id="supplier"
-                                    required
                                     name="Supplier"
-                                    placeholder="Café Authorité"
+                                    defaultValue={singleCoffeeData?.Supplier}
+                                    key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
                             </div>
@@ -165,8 +175,8 @@ const AddCoffeForm = () => {
                                     type="text"
                                     id="taste"
                                     name="Taste"
-                                    placeholder="Sweet and Hot"
-                                    required
+                                    defaultValue={singleCoffeeData?.Taste}
+                                    key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
                             </div>
@@ -184,8 +194,8 @@ const AddCoffeForm = () => {
                                     type="text"
                                     id="category"
                                     name="Category"
-                                    required
-                                    placeholder="Americano"
+                                    defaultValue={singleCoffeeData?.Category}
+                                    key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
                             </div>
@@ -200,7 +210,8 @@ const AddCoffeForm = () => {
                                     type="text"
                                     id="details"
                                     name="Details"
-                                    required
+                                    defaultValue={singleCoffeeData?.Details}
+                                    key={Date.now()}
                                     placeholder="Espresso with Hot water"
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
@@ -217,13 +228,17 @@ const AddCoffeForm = () => {
                                     type="number"
                                     id="price"
                                     name="price"
-                                    required
-                                    placeholder="Espresso with Hot water"
+                                    defaultValue={singleCoffeeData?.price}
+                                    key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
                             </div>
                         </div>
-
+                        <div className="avatar">
+                            <div className="w-24 rounded-xl">
+                                <img key={Date.now()} src={singleCoffeeData?.Photo} />
+                            </div>
+                        </div>
                         <div>
                             <label
                                 className="block text-gray-700 font-semibold mb-2"
@@ -235,7 +250,6 @@ const AddCoffeForm = () => {
                                 type="file"
                                 id="photo"
                                 name="Photo"
-                                required
                                 className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 onChange={handleImageUpload}
                             />
@@ -270,4 +284,4 @@ const AddCoffeForm = () => {
     );
 };
 
-export default AddCoffeForm;
+export default UpdateCoffeForm;

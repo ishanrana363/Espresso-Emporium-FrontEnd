@@ -1,17 +1,41 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import coffeeStore from '../../api-request/coffe-api/coffeeStore';
+import { deleteAlert } from '../../helper/deleteAlert';
+import Swal from 'sweetalert2';
 
 const Product = () => {
-    const { coffeeDataListApi, coffeDataList } = coffeeStore();
+    const { coffeeDataListApi, coffeDataList, coffeeDeleteApi } = coffeeStore();
     useEffect(() => {
         (async () => {
             await coffeeDataListApi();
         })()
     }, []);
-    const handleDelete = async (id)=>{
+    const handleDelete = async (id) => {
         console.log(id);
+        let resp = await deleteAlert();
+
+        if (resp.isConfirmed) {
+            let res = await coffeeDeleteApi(id);
+            if (res) {
+                await coffeeDataListApi();
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success"
+                });
+
+            } else {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to delete the file.",
+                    icon: "error"
+                });
+            }
+        }
     }
+
+
     return (
         <div className="w-11/12 mx-auto">
             {/* Header Section */}
@@ -49,10 +73,10 @@ const Product = () => {
                                             Name: <span className="text-[#5C5B5B]"> {item?.Name} </span>
                                         </h2>
                                         <p className="text-lg text-[#1B1A1A]">
-                                            Chef: <span className="text-[#5C5B5B]"> { item?.Chef } </span>
+                                            Chef: <span className="text-[#5C5B5B]"> {item?.Chef} </span>
                                         </p>
                                         <p className="text-lg text-[#1B1A1A]">
-                                            Price: <span className="text-[#5C5B5B]">{ item.price  } </span>
+                                            Price: <span className="text-[#5C5B5B]">{item.price} </span>
                                         </p>
                                     </div>
                                     <div className="flex flex-row md:flex-col items-center space-x-2 md:space-x-0 md:space-y-2">
@@ -64,13 +88,15 @@ const Product = () => {
                                             />
                                         </button>
                                         <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
-                                            <img
-                                                className="w-6"
-                                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950630/Group_12_cdcavw.png"
-                                                alt=""
-                                            />
+                                            <Link to={`/update-coffec/${item?._id}`}>
+                                                <img
+                                                    className="w-6"
+                                                    src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950630/Group_12_cdcavw.png"
+                                                    alt=""
+                                                />
+                                            </Link>
                                         </button>
-                                        <button onClick={()=>handleDelete(item?._id)} className="bg-red-200 hover:bg-red-300 p-2 rounded">
+                                        <button onClick={() => handleDelete(item?._id)} className="bg-red-200 hover:bg-red-300 p-2 rounded">
                                             <img
                                                 className="w-6"
                                                 src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950713/Group_13_ngwbeg.png"
