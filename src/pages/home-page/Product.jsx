@@ -1,5 +1,5 @@
-import React from 'react'
-import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa'
+// import React from 'react'
+// import { FaEdit, FaEye, FaTrashAlt } from 'react-icons/fa'
 
 const Product = () => {
     return (
