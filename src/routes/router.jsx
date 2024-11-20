@@ -7,6 +7,7 @@ import UpdateCoffeForm from "../pages/home-page/UpdateCoffeForm";
 
 
 export const router = createBrowserRouter([
+    
     {
         path : "/",
         element : <Layout></Layout>,
@@ -26,7 +27,11 @@ export const router = createBrowserRouter([
             {
                 path : "update-coffec/:id",
                 element : <UpdateCoffeForm></UpdateCoffeForm>
-            }
+            },
+            
+                
+            
         ]
-    }
+    },
+    
 ])

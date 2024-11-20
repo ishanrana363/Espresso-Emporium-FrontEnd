@@ -3,14 +3,26 @@ import { Link } from 'react-router-dom';
 import coffeeStore from '../../api-request/coffe-api/coffeeStore';
 import { deleteAlert } from '../../helper/deleteAlert';
 import Swal from 'sweetalert2';
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios';
+
 
 const Product = () => {
-    const { coffeeDataListApi, coffeDataList, coffeeDeleteApi } = coffeeStore();
+    const { coffeeDataListApi, coffeeDeleteApi } = coffeeStore();
     useEffect(() => {
         (async () => {
             await coffeeDataListApi();
         })()
     }, []);
+    const { data: product = [], isPending , refetch } = useQuery({
+        queryKey: ["coffe"],
+        queryFn: async () => {
+            let res = await axios.get(`https://espresso-emporium-backend-lemon.vercel.app/coffee`);
+            return res.data;
+        },
+
+    });
+
     const handleDelete = async (id) => {
         console.log(id);
         let resp = await deleteAlert();
@@ -33,6 +45,7 @@ const Product = () => {
                 });
             }
         }
+        refetch();
     }
 
 
@@ -59,29 +72,29 @@ const Product = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 my-10">
                 {/* Product 1 */}
                 {
-                    coffeDataList && coffeDataList.map((item, i) => {
+                    product && product.map((item, i) => {
                         return (
                             <div key={i} >
-                                <Link to={`/coffe-details/${item._id}`}>
-                                    <div className="flex flex-col md:flex-row items-center bg-[#F5F4F1] shadow-lg rounded-lg p-5">
+                                <div className="flex flex-col md:flex-row items-center bg-[#F5F4F1] shadow-lg rounded-lg p-5">
 
-                                        <img
-                                            src={item?.Photo}
-                                            alt="Coffee Cup"
-                                            className="w-24 h-32 object-cover mb-4 md:mb-0"
-                                        />
-                                        <div className="ml-0 md:ml-3 flex-grow text-center md:text-left">
-                                            <h2 className="text-lg text-[#1B1A1A]">
-                                                Name: <span className="text-[#5C5B5B]"> {item?.Name} </span>
-                                            </h2>
-                                            <p className="text-lg text-[#1B1A1A]">
-                                                Chef: <span className="text-[#5C5B5B]"> {item?.Chef} </span>
-                                            </p>
-                                            <p className="text-lg text-[#1B1A1A]">
-                                                Price: <span className="text-[#5C5B5B]">{item.price} </span>
-                                            </p>
-                                        </div>
-                                        <div className="flex flex-row md:flex-col items-center space-x-2 md:space-x-0 md:space-y-2">
+                                    <img
+                                        src={item?.Photo}
+                                        alt="Coffee Cup"
+                                        className="w-24 h-32 object-cover mb-4 md:mb-0"
+                                    />
+                                    <div className="ml-0 md:ml-3 flex-grow text-center md:text-left">
+                                        <h2 className="text-lg text-[#1B1A1A]">
+                                            Name: <span className="text-[#5C5B5B]"> {item?.Name} </span>
+                                        </h2>
+                                        <p className="text-lg text-[#1B1A1A]">
+                                            Chef: <span className="text-[#5C5B5B]"> {item?.Chef} </span>
+                                        </p>
+                                        <p className="text-lg text-[#1B1A1A]">
+                                            Price: <span className="text-[#5C5B5B]">{item.price} </span>
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-row md:flex-col items-center space-x-2 md:space-x-0 md:space-y-2">
+                                        <Link to={`/coffe-details/${item._id}`}>
                                             <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
                                                 <img
                                                     className="w-6"
@@ -89,28 +102,34 @@ const Product = () => {
                                                     alt=""
                                                 />
                                             </button>
-                                            <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
-                                                <Link to={`/update-coffec/${item?._id}`}>
-                                                    <img
-                                                        className="w-6"
-                                                        src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950630/Group_12_cdcavw.png"
-                                                        alt=""
-                                                    />
-                                                </Link>
-                                            </button>
-                                            <button onClick={() => handleDelete(item?._id)} className="bg-red-200 hover:bg-red-300 p-2 rounded">
+                                        </Link>
+                                        <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded">
+                                            <Link to={`/update-coffec/${item?._id}`}>
                                                 <img
                                                     className="w-6"
-                                                    src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950713/Group_13_ngwbeg.png"
+                                                    src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950630/Group_12_cdcavw.png"
                                                     alt=""
                                                 />
-                                            </button>
-                                        </div>
+                                            </Link>
+                                        </button>
+                                        <button onClick={() => handleDelete(item?._id)} className="bg-red-200 hover:bg-red-300 p-2 rounded">
+                                            <img
+                                                className="w-6"
+                                                src="https://res.cloudinary.com/dj2edy2rg/image/upload/v1731950713/Group_13_ngwbeg.png"
+                                                alt=""
+                                            />
+                                        </button>
                                     </div>
-                                </Link>
+                                </div>
                             </div>
                         )
                     })
+                }
+
+                {
+                    isPending && <div>
+                        <h1 className='text-center' >Data Loading ......</h1>
+                    </div>
                 }
 
 

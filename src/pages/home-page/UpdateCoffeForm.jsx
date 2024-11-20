@@ -4,13 +4,24 @@ import coffeeStore from "../../api-request/coffe-api/coffeeStore";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateAlert } from "../../helper/updateAlert";
 import Swal from "sweetalert2";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const UpdateCoffeForm = () => {
     const [imageUrl, setImageUrl] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { singleCoffeeDataApi, singleCoffeeData,coffeeUpdateApi } = coffeeStore();
+    const { singleCoffeeData, coffeeUpdateApi } = coffeeStore();
     const navigate = useNavigate();
     window.scrollTo(0, 0);
+    const {id} = useParams();
+
+    const { data: coffee = {}, isPending, refetch } = useQuery({
+        queryKey: ['singlecoffeeData'],
+        queryFn: async () => {
+            let res = await axios.get(`https://espresso-emporium-backend-lemon.vercel.app/coffee/${id}`);
+            return res.data;
+        },
+    })
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
@@ -24,17 +35,18 @@ const UpdateCoffeForm = () => {
         }
     };
 
-    const { id } = useParams();
+    
 
-    useEffect(() => {
-        (async () => {
-            setLoading(true);
-            await singleCoffeeDataApi(id);
-            setLoading(false); // Stop loading
-        })()
-    }, [id]);
 
-    const {Photo : upcommingPhoto} = singleCoffeeData;
+    // useEffect(() => {
+    //     (async () => {
+    //         setLoading(true);
+    //         await singleCoffeeDataApi(id);
+    //         setLoading(false); // Stop loading
+    //     })()
+    // }, [id]);
+
+    const { Photo: upcommingPhoto } = singleCoffeeData;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -47,16 +59,16 @@ const UpdateCoffeForm = () => {
         const Details = e.target.Details.value;
         const Photo = e.target.Photo.files[0];
         const price = e.target.price.value;
-        
+
         let upcommingImg = upcommingPhoto;
 
-        if(!Photo?.name){
+        if (!Photo?.name) {
             upcommingImg = upcommingPhoto;
         }
 
         upcommingImg = await uploadImg(Photo);
 
-        
+
 
         const payload = {
             Name,
@@ -70,22 +82,21 @@ const UpdateCoffeForm = () => {
         };
 
         let resp = await updateAlert();
-        if(resp.isConfirmed){
+        if (resp.isConfirmed) {
             setLoading(true);
-            let res = coffeeUpdateApi(id,payload);
+            let res = coffeeUpdateApi(id, payload);
             setLoading(false); // Stop loading
-            if(res){
-                setLoading(true);
-                await singleCoffeeDataApi(id);
-                setLoading(false); // Stop loading
+            if (res) {
+
                 Swal.fire({
                     title: "Coffee Updated Successfully!",
                     icon: "success",
                     confirmButtonText: "Ok",
                 });
                 navigate("/")
+                refetch();
                 return;
-            }else{
+            } else {
                 Swal.fire({
                     title: "Failed to Update Coffee!",
                     icon: "error",
@@ -93,7 +104,7 @@ const UpdateCoffeForm = () => {
                 })
             }
         }
-        
+
 
     };
 
@@ -124,7 +135,7 @@ const UpdateCoffeForm = () => {
                                     type="text"
                                     id="name"
                                     name="Name"
-                                    defaultValue={singleCoffeeData?.Name}
+                                    defaultValue={coffee?.Name}
                                     key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
@@ -140,7 +151,7 @@ const UpdateCoffeForm = () => {
                                     type="text"
                                     id="chef"
                                     name="Chef"
-                                    defaultValue={singleCoffeeData?.Chef}
+                                    defaultValue={coffee?.Chef}
                                     key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
@@ -159,7 +170,7 @@ const UpdateCoffeForm = () => {
                                     type="text"
                                     id="supplier"
                                     name="Supplier"
-                                    defaultValue={singleCoffeeData?.Supplier}
+                                    defaultValue={coffee?.Supplier}
                                     key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
@@ -175,7 +186,7 @@ const UpdateCoffeForm = () => {
                                     type="text"
                                     id="taste"
                                     name="Taste"
-                                    defaultValue={singleCoffeeData?.Taste}
+                                    defaultValue={coffee?.Taste}
                                     key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
@@ -194,7 +205,7 @@ const UpdateCoffeForm = () => {
                                     type="text"
                                     id="category"
                                     name="Category"
-                                    defaultValue={singleCoffeeData?.Category}
+                                    defaultValue={coffee?.Category}
                                     key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
@@ -210,7 +221,7 @@ const UpdateCoffeForm = () => {
                                     type="text"
                                     id="details"
                                     name="Details"
-                                    defaultValue={singleCoffeeData?.Details}
+                                    defaultValue={coffee?.Details}
                                     key={Date.now()}
                                     placeholder="Espresso with Hot water"
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -228,7 +239,7 @@ const UpdateCoffeForm = () => {
                                     type="number"
                                     id="price"
                                     name="price"
-                                    defaultValue={singleCoffeeData?.price}
+                                    defaultValue={coffee?.price}
                                     key={Date.now()}
                                     className="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
@@ -236,7 +247,7 @@ const UpdateCoffeForm = () => {
                         </div>
                         <div className="avatar">
                             <div className="w-24 rounded-xl">
-                                <img key={Date.now()} src={singleCoffeeData?.Photo} />
+                                <img key={Date.now()} src={coffee?.Photo} />
                             </div>
                         </div>
                         <div>
@@ -280,6 +291,13 @@ const UpdateCoffeForm = () => {
                     </form>
                 </div>
             </div>
+            {
+                isPending && (
+                    <div>
+                        <h1 className="text-center" >data loading</h1>
+                    </div>
+                )
+            }
         </div>
     );
 };
