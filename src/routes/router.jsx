@@ -4,9 +4,11 @@ import Home from "../pages/home-page/Home";
 import CoffeeDetails from "../pages/home-page/CoffeeDetails";
 import AddCoffeForm from "../pages/home-page/AddCoffeForm";
 import UpdateCoffeForm from "../pages/home-page/UpdateCoffeForm";
+import SingUp from "../components/SingUp";
 
 
 export const router = createBrowserRouter([
+    
     {
         path : "/",
         element : <Layout></Layout>,
@@ -26,7 +28,14 @@ export const router = createBrowserRouter([
             {
                 path : "update-coffec/:id",
                 element : <UpdateCoffeForm></UpdateCoffeForm>
-            }
+            },
+            
+                
+            
         ]
+    },
+    {
+            path : "/sign-up",
+            element : <SingUp></SingUp>
     }
 ])

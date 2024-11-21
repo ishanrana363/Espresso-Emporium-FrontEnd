@@ -42,19 +42,19 @@ const Footer = () => {
 
                             {/* Contact Details */}
                             <div className="flex items-center gap-4 mb-4">
-                                <span className="text-indigo-600">
+                                <span className="text-black">
                                     <FaPhone />
                                 </span>
                                 <span className="text-gray-600">+88 01533 333 333</span>
                             </div>
                             <div className="flex items-center gap-4 mb-4">
-                                <span className="text-indigo-600">
+                                <span className="text-black">
                                     <FaMessage />
                                 </span>
                                 <span className="text-gray-600">info@gmail.com</span>
                             </div>
                             <div className="flex items-center gap-4">
-                                <span className="text-indigo-600">
+                                <span className="text-black">
                                     <FaLocationDot />
                                 </span>
                                 <span className="text-gray-600">
