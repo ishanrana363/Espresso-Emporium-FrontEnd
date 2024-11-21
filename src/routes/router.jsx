@@ -34,8 +34,12 @@ export const router = createBrowserRouter([
             
         ]
     },
+<<<<<<< HEAD
     {
             path : "/sign-up",
             element : <SingUp></SingUp>
     }
+=======
+    
+>>>>>>> 022b478319ad9cc2314617aaf8566117d8a8d790
 ])
