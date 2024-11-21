@@ -5,6 +5,7 @@ import CoffeeDetails from "../pages/home-page/CoffeeDetails";
 import AddCoffeForm from "../pages/home-page/AddCoffeForm";
 import UpdateCoffeForm from "../pages/home-page/UpdateCoffeForm";
 import SingUp from "../components/SingUp";
+import UserList from "../components/UserList";
 
 
 export const router = createBrowserRouter([
@@ -34,12 +35,12 @@ export const router = createBrowserRouter([
             
         ]
     },
-<<<<<<< HEAD
     {
             path : "/sign-up",
             element : <SingUp></SingUp>
+    },
+    {
+        path : "/user-list",
+        element : <UserList></UserList>
     }
-=======
-    
->>>>>>> 022b478319ad9cc2314617aaf8566117d8a8d790
 ])

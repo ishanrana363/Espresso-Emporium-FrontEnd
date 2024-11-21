@@ -7,25 +7,17 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-<<<<<<< HEAD
 import AuthProvider from './context/AuthProvider.jsx'
-=======
->>>>>>> 022b478319ad9cc2314617aaf8566117d8a8d790
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-<<<<<<< HEAD
     <AuthProvider>
-=======
->>>>>>> 022b478319ad9cc2314617aaf8566117d8a8d790
       <QueryClientProvider client={queryClient} >
         <RouterProvider router={router} >
         </RouterProvider>
       </QueryClientProvider>
-<<<<<<< HEAD
+
     </AuthProvider>
-=======
->>>>>>> 022b478319ad9cc2314617aaf8566117d8a8d790
   </StrictMode>,
 )
